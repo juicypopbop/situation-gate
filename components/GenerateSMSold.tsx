@@ -45,10 +45,10 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
     >
       <Text size="lg">{item.firstName} </Text>
       {/* <Text size="lg">
-          {item.phoneNumbers?.map((contact, index) => {
-            return contact.number;
-          })}{' '}
-        </Text> */}
+        {item.phoneNumbers?.map((contact, index) => {
+          return contact.number;
+        })}{' '}
+      </Text> */}
       <Button action="primary" variant="solid" size="lg">
         <ButtonIcon as={MessageCircleMore} />
       </Button>
@@ -252,24 +252,18 @@ export default function GenerateSMS() {
 
   return (
     <View style={styles.container}>
-      <Text $light-color="$amber500" $dark-color="$blue400">
+      <Text style={styles.friendlyText} $light-color="$amber500" $dark-color="$blue400">
         Here are your Contacts:
       </Text>
-      {/* <ListContacts /> */}
+      <ListContacts />
       <Pressable
-        alignItems="center"
-        justifyContent="center"
-        py={12}
-        px={32}
-        borderRadius={4}
-        elevation={3}
-        backgroundColor="aqua"
+        style={styles.button}
         onPress={() => {
           console.log('pressed button for sending sms!');
-          // sendSMS();
+          sendSMS();
         }}
       >
-        <Text style={styles.text}>Add Contacts to your List 🔒</Text>
+        <Text style={styles.text}>Send Message To Someone</Text>
       </Pressable>
     </View>
   );
