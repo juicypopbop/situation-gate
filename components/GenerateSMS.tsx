@@ -1,9 +1,21 @@
+import { FontAwesome } from '@expo/vector-icons';
+import { Button, ButtonIcon, ButtonText, Text } from '@gluestack-ui/themed';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
+import { MessageCircleMore } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
 
-import { View, Text } from './Themed';
+import { View } from './Themed';
+
+import Colors from '@/constants/Colors';
 
 type ItemProps = {
   item: Contacts.Contact;
@@ -12,16 +24,27 @@ type ItemProps = {
   textColor: string;
 };
 
-const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
-  <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
-    <Text style={[styles.title, { color: textColor }]}>{item.firstName}</Text>
-    <Text style={[styles.title, { color: textColor }]}>
-      {item.phoneNumbers?.map((contact, index) => {
-        return contact.number;
-      })}
-    </Text>
-  </TouchableOpacity>
-);
+const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
+  const colorScheme = useColorScheme();
+
+  const iconButtonCustom = (
+    <FontAwesome name="wechat" size={25} color={Colors[colorScheme ?? 'light'].text} />
+  );
+
+  return (
+    <View style={[styles.item, { backgroundColor: '#f9a2af' }]}>
+      <Text size="lg">{item.firstName} </Text>
+      <Text size="lg">
+        {item.phoneNumbers?.map((contact, index) => {
+          return contact.number;
+        })}{' '}
+      </Text>
+      <Button action="primary" variant="solid" size="lg">
+        <ButtonIcon as={MessageCircleMore} />
+      </Button>
+    </View>
+  );
+};
 
 function ListContacts() {
   const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
@@ -117,11 +140,24 @@ export default function GenerateSMS() {
     <View style={styles.container}>
       <Text
         style={styles.friendlyText}
+        $light-color="$amber500"
+        $dark-color="$blue400"
         // lightColor="rgba(0,0,0,0.8)"
         // darkColor="rgba(255,255,255,0.8)"
+        // sx={{
+        //   _dark: {
+        //     color: '$light900',
+        //   },
+        //   _light: {
+        //     color: '$light500',
+        //   },
+        // }}
       >
-        Heyo
+        Here are your Contacts:
       </Text>
+      <Button action="primary" variant="solid" size="lg">
+        <ButtonText>Random Pick Sneaky Link To Someone</ButtonText>
+      </Button>
       <ListContacts />
       <Pressable
         style={styles.button}
@@ -163,9 +199,14 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   item: {
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    borderRadius: 4,
+    // padding: 20,
+    marginVertical: 4,
+    // marginHorizontal: 16,
   },
   title: {
     fontSize: 32,
