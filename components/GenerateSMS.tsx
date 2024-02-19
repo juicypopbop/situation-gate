@@ -11,10 +11,19 @@ import {
   VStack,
   Heading,
   AvatarFallbackText,
+  Center,
+  ModalBackdrop,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  Icon,
 } from '@gluestack-ui/themed';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
-import { MessageCircleMore } from 'lucide-react-native';
+import { MessageCircleMore, X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, FlatList } from 'react-native';
 
@@ -231,6 +240,10 @@ function ListContacts() {
 }
 
 export default function GenerateSMS() {
+  const [showModal, setShowModal] = useState(false);
+  console.log(showModal);
+  const ref = React.useRef(null);
+
   const sendSMS = async () => {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
@@ -251,7 +264,7 @@ export default function GenerateSMS() {
   };
 
   return (
-    <View style={styles.container}>
+    <Box style={styles.container}>
       <Text $light-color="$amber500" $dark-color="$blue400">
         Here are your Contacts:
       </Text>
@@ -264,14 +277,62 @@ export default function GenerateSMS() {
         borderRadius={4}
         elevation={3}
         backgroundColor="aqua"
+        ref={ref}
         onPress={() => {
           console.log('pressed button for sending sms!');
+          setShowModal(true);
           // sendSMS();
         }}
       >
+        <Modal
+          isOpen={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          finalFocusRef={ref}
+        >
+          <ModalBackdrop />
+          <ModalContent>
+            <ModalHeader>
+              <Heading size="lg">Engage with Modals</Heading>
+              <ModalCloseButton>
+                <Icon as={X} />
+              </ModalCloseButton>
+            </ModalHeader>
+            <ModalBody>
+              <Text>
+                Elevate user interactions with our versatile modals. Seamlessly integrate
+                notifications, forms, and media displays. Make an impact effortlessly.
+              </Text>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                variant="outline"
+                size="sm"
+                action="secondary"
+                mr="$3"
+                onPress={() => {
+                  setShowModal(false);
+                }}
+              >
+                <ButtonText>Cancel</ButtonText>
+              </Button>
+              <Button
+                size="sm"
+                action="positive"
+                borderWidth="$0"
+                onPress={() => {
+                  setShowModal(false);
+                }}
+              >
+                <ButtonText>Explore</ButtonText>
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
         <Text style={styles.text}>Add Contacts to your List 🔒</Text>
       </Pressable>
-    </View>
+    </Box>
   );
 }
 
