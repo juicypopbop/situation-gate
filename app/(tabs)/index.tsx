@@ -18,8 +18,8 @@ export default function TabOneScreen() {
         >
           SMS here stuff
         </Text>
-        <GenerateSMS />
       </View>
+      <GenerateSMS />
     </View>
   );
 }

@@ -1,8 +1,97 @@
+import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
-import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Pressable, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { Text, View } from './Themed';
+import { View, Text } from './Themed';
+
+type ItemProps = {
+  item: Contacts.Contact;
+  onPress: () => void;
+  backgroundColor: string;
+  textColor: string;
+};
+
+const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
+  <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
+    <Text style={[styles.title, { color: textColor }]}>{item.firstName}</Text>
+    <Text style={[styles.title, { color: textColor }]}>
+      {item.phoneNumbers?.map((contact, index) => {
+        return contact.number;
+      })}
+    </Text>
+  </TouchableOpacity>
+);
+
+function ListContacts() {
+  const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
+  const [selectedId, setSelectedId] = useState<string>();
+
+  const fetchContacts = async () => {
+    const { status } = await Contacts.requestPermissionsAsync();
+    if (status === 'granted') {
+      const { data } = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.FirstName, Contacts.Fields.PhoneNumbers],
+      });
+
+      if (data.length > 0) {
+        const contact = data[0];
+        console.log(contact);
+        console.table(data);
+        setContacts(data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const renderItem = ({ item }: { item: Contacts.Contact }) => {
+    const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9a2af';
+    const color = item.id === selectedId ? 'white' : 'black';
+
+    return (
+      <Item
+        item={item}
+        onPress={() => setSelectedId(item.id)}
+        backgroundColor={backgroundColor}
+        textColor={color}
+      />
+    );
+  };
+
+  return (
+    // <View style={styles.container}>
+    //   <Text
+    //     style={styles.friendlyText}
+    //     lightColor="rgba(0,0,0,0.8)"
+    //     darkColor="rgba(255,255,255,0.8)"
+    //   >
+    //     Here are your contacts:
+    //   </Text>
+    //   <View style={styles.container}>
+    //     <FlatList
+    //       data={contacts}
+    //       renderItem={({ item }) => (
+    //         <View>
+    //           <Text>{item.name}</Text>
+    //         </View>
+    //       )}
+    //       keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
+    //     />
+    //   </View>
+    // </View>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={contacts}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
+        extraData={selectedId}
+      />
+    </SafeAreaView>
+  );
+}
 
 export default function GenerateSMS() {
   const sendSMS = async () => {
@@ -25,14 +114,15 @@ export default function GenerateSMS() {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text
         style={styles.friendlyText}
-        lightColor="rgba(0,0,0,0.8)"
-        darkColor="rgba(255,255,255,0.8)"
+        // lightColor="rgba(0,0,0,0.8)"
+        // darkColor="rgba(255,255,255,0.8)"
       >
         Heyo
       </Text>
+      <ListContacts />
       <Pressable
         style={styles.button}
         onPress={() => {
@@ -40,13 +130,17 @@ export default function GenerateSMS() {
           sendSMS();
         }}
       >
-        <Text style={styles.text}>Hi People</Text>
+        <Text style={styles.text}>Send Message To Someone</Text>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 0,
+  },
   friendlyText: {
     fontSize: 17,
     lineHeight: 24,
@@ -67,5 +161,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: 'black',
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
   },
 });
