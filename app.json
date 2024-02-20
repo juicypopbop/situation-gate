@@ -36,7 +36,8 @@
         {
           "contactsPermission": "Allow Situation Gate to access your contacts."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

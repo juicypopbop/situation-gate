@@ -245,8 +245,15 @@ function ListContacts() {
 }
 
 const MemoizedCheckbox = React.memo(({ value, label, children }: CheckboxProps) => (
-  <Checkbox value={value} aria-label={label}>
-    <CheckboxIndicator mr="$2">
+  <Checkbox
+    size="lg"
+    borderBottomWidth="$1"
+    borderColor="$trueGray800"
+    $dark-borderColor="$trueGray100"
+    value={value}
+    aria-label={label}
+  >
+    <CheckboxIndicator mr="$2" my="$5">
       <CheckboxIcon as={CheckIcon} />
     </CheckboxIndicator>
     <CheckboxLabel>{children}</CheckboxLabel>
@@ -302,33 +309,28 @@ function ListContactsCheckBox() {
     //     keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
     //   />
     // </Box>
-
-    <CheckboxGroup
-      value={values}
-      onChange={(keys) => {
-        setValues(keys);
-      }}
-    >
-      <FlatList
-        data={contacts}
-        renderItem={({ item }) => {
-          const label = item.firstName ?? 'Unnamed contact';
-          return (
-            // <Checkbox value={item.id} aria-label={label}>
-            //   <CheckboxIndicator mr="$2">
-            //     <CheckboxIcon as={CheckIcon} />
-            //   </CheckboxIndicator>
-            //   <CheckboxLabel>{item.firstName}</CheckboxLabel>
-            // </Checkbox>
-            <MemoizedCheckbox value={item.id} label={label}>
-              {item.firstName}
-            </MemoizedCheckbox>
-          );
-        }}
-        keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
-      />
-    </CheckboxGroup>
-
+    <Box borderWidth="$1" borderColor="$amber400" borderRadius="$md" px="$1.5" py="$10">
+      <CheckboxGroup value={values} onChange={handleChange}>
+        <FlatList
+          data={contacts}
+          renderItem={({ item }) => {
+            const label = item.firstName ?? 'Unnamed contact';
+            return (
+              // <Checkbox value={item.id} aria-label={label}>
+              //   <CheckboxIndicator mr="$2">
+              //     <CheckboxIcon as={CheckIcon} />
+              //   </CheckboxIndicator>
+              //   <CheckboxLabel>{item.firstName}</CheckboxLabel>
+              // </Checkbox>
+              <MemoizedCheckbox value={item.id} label={label}>
+                {item.firstName}
+              </MemoizedCheckbox>
+            );
+          }}
+          keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
+        />
+      </CheckboxGroup>
+    </Box>
     // other version
     // <VStack space="3xl">
     //   <CheckboxGroup value={values} onChange={handleChange}>
