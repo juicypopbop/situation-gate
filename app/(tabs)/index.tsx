@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import GenerateSMS from '@/components/GenerateSMS';
+import SendSMSContactList from '@/components/SendSMSContactList';
 import { Text, View } from '@/components/Themed';
 
 export default function TabOneScreen() {
@@ -19,7 +18,8 @@ export default function TabOneScreen() {
           SMS here stuf
         </Text>
       </View>
-      <GenerateSMS />
+      <SendSMSContactList />
+      {/* <GenerateSMS /> */}
     </View>
   );
 }

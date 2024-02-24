@@ -1,17 +1,19 @@
+import { Center, Divider, Text, View } from '@gluestack-ui/themed';
 import { StyleSheet } from 'react-native';
 
 import EditContactList from '@/components/EditContactList';
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
 
 export default function TabTwoScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Edit Quick Contacts</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+    <Center flex={1}>
+      <Text fontSize={20} fontWeight="bold" pt={15}>
+        Edit Quick Contacts
+      </Text>
+      <Divider my="$4" width="$4/6" />
+      {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
       {/* <EditScreenInfo path="app/(tabs)/two.tsx" /> */}
       <EditContactList />
-    </View>
+    </Center>
   );
 }
 
@@ -20,10 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,

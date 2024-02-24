@@ -49,9 +49,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="edit-contacts"
         options={{
-          title: 'Tab Two',
+          title: 'Edit Contacts',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />

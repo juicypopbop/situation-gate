@@ -6,78 +6,20 @@ import {
   ButtonIcon,
   HStack,
   Heading,
-  Pressable,
   Text,
   VStack,
 } from '@gluestack-ui/themed';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
 import { MessageCircleMore } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList } from 'react-native';
 
-import { View } from './Themed';
+import useContactStore from '@/store/contactsStore';
 
-type ItemProps = {
-  item: Contacts.Contact;
-  onPress: () => void;
-  backgroundColor: string;
-  textColor: string;
-};
-
-const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => {
-  return (
-    // <View style={[styles.item, { backgroundColor: '#f9a2af' }]}>
-    <Pressable
-      onPress={onPress}
-      flex={1}
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
-      w="$full"
-      // maxWidth="$5/6"
-      px={4}
-      borderRadius={4}
-      marginVertical={4}
-      backgroundColor={backgroundColor}
-    >
-      <Text size="lg">{item.firstName} </Text>
-      {/* <Text size="lg">
-        {item.phoneNumbers?.map((contact, index) => {
-          return contact.number;
-        })}{' '}
-      </Text> */}
-      <Button action="primary" variant="solid" size="lg">
-        <ButtonIcon as={MessageCircleMore} />
-      </Button>
-    </Pressable>
-    // </View>
-  );
-};
-
-function ListContacts() {
+function ListContactsCheckBox() {
   const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
   const [selectedId, setSelectedId] = useState<string>();
-
-  const fetchContacts = async () => {
-    const { status } = await Contacts.requestPermissionsAsync();
-    if (status === 'granted') {
-      const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.FirstName, Contacts.Fields.PhoneNumbers],
-      });
-
-      if (data.length > 0) {
-        const contact = data[0];
-        console.log(contact);
-        console.table(data);
-        setContacts(data);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
 
   // const renderItem = ({ item }: { item: Contacts.Contact }) => {
   //   const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9a2af';
@@ -228,83 +170,25 @@ function ListContacts() {
   );
 }
 
-export default function GenerateSMS() {
-  const sendSMS = async () => {
-    const isAvailable = await SMS.isAvailableAsync();
-    if (isAvailable) {
-      // do your SMS stuff here
-
-      //   allows you to send to multiple numbers
-      //   const { result } = await SMS.sendSMSAsync(
-      //     ['0123456789', '9876543210'],
-      //     'My sample HelloWorld message'
-      //   );
-
-      const { result } = await SMS.sendSMSAsync(['9876543210'], 'My sample HelloWorld message');
-      console.log(result, 'SMS status!');
-    } else {
-      // misfortune... there's no SMS available on this device
-      console.log('SMS is not available on this device');
-    }
-  };
+const SendSMSContactList = () => {
+  const { contacts, contactCount } = useContactStore();
+  //   console.log(contacts, 'contacts');
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.friendlyText} $light-color="$amber500" $dark-color="$blue400">
-        Here are your Contacts:
-      </Text>
-      <ListContacts />
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          console.log('pressed button for sending sms!');
-          sendSMS();
-        }}
-      >
-        <Text style={styles.text}>Send Message To Someone</Text>
-      </Pressable>
-    </View>
+    <Box flex={1}>
+      <Text>SendSMSContactList</Text>
+      <Text>Number of Contacts: {contactCount}</Text>
+      <FlatList
+        data={contacts}
+        renderItem={({ item }) => (
+          <Box>
+            <Text>{item.name}</Text>
+          </Box>
+        )}
+        keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
+      />
+    </Box>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 0,
-  },
-  friendlyText: {
-    fontSize: 17,
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'white',
-  },
-  text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'black',
-  },
-  item: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 10,
-    borderRadius: 4,
-    // padding: 20,
-    marginVertical: 4,
-    // marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
-});
+export default SendSMSContactList;

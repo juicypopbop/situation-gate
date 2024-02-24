@@ -1,38 +1,30 @@
 import {
   Avatar,
-  AvatarImage,
+  AvatarFallbackText,
   Box,
   Button,
   ButtonIcon,
   ButtonText,
+  CheckboxGroup,
   HStack,
+  Heading,
+  Icon,
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Pressable,
   Text,
   VStack,
-  Heading,
-  AvatarFallbackText,
-  Center,
-  ModalBackdrop,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Modal,
-  ModalContent,
-  ModalFooter,
-  Icon,
-  CheckboxGroup,
-  Checkbox,
-  CheckboxIndicator,
-  CheckboxIcon,
-  CheckboxLabel,
 } from '@gluestack-ui/themed';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
-import { MessageCircleMore, X, Check as CheckIcon } from 'lucide-react-native';
+import { MessageCircleMore, X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, FlatList } from 'react-native';
-
-import { View } from './Themed';
+import { FlatList, StyleSheet } from 'react-native';
 
 type ItemProps = {
   item: Contacts.Contact;
