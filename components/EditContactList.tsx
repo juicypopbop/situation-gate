@@ -65,6 +65,7 @@ function ListContactsCheckBox() {
     fetchContacts();
   }, []);
 
+  // TODO: performance optimization needed here, might be due to dependency array
   const handleChange = useCallback(
     (contactIDs: React.SetStateAction<string[]>) => {
       console.log(contactIDs, 'current contactIDs');

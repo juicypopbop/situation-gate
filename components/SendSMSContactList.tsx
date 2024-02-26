@@ -1,6 +1,10 @@
 import {
   Avatar,
+  AvatarBadge,
   AvatarFallbackText,
+  Badge,
+  BadgeIcon,
+  BadgeText,
   Box,
   Button,
   ButtonIcon,
@@ -11,7 +15,7 @@ import {
 } from '@gluestack-ui/themed';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
-import { MessageCircleMore } from 'lucide-react-native';
+import { BadgeCheckIcon, MessageCircleMore } from 'lucide-react-native';
 import { FlatList } from 'react-native';
 
 import useContactStore from '@/store/contactsStore';
@@ -82,6 +86,21 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
     console.log(item.rawImage, 'item image');
   }
 
+  function areAllDuplicates(phoneNumbers: string[]): boolean {
+    if (!phoneNumbers || phoneNumbers.length <= 1) {
+      return false;
+    }
+
+    const firstNumber = phoneNumbers[0];
+    for (let i = 1; i < phoneNumbers.length; i++) {
+      if (phoneNumbers[i] !== firstNumber) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   // console.log(item.imageAvailable, 'item');
 
   return (
@@ -100,20 +119,32 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
           <AvatarFallbackText>{item.firstName}</AvatarFallbackText>
           {/* <AvatarImage source={{ uri: imageUri }} /> */}
           {/* <MessageCircleMore /> */}
+          <AvatarBadge $dark-borderColor="$black" />
         </Avatar>
         <VStack>
-          <Text color="$coolGray800" fontWeight="$bold" $dark-color="$warmGray100">
+          <Text
+            textAlign="center"
+            color="$coolGray800"
+            fontWeight="$bold"
+            $dark-color="$warmGray100"
+          >
             {item.name}
           </Text>
-          <Text color="$coolGray600" $dark-color="$warmGray200">
+          {/* <Text color="$coolGray600" $dark-color="$warmGray200">
             {item.phoneNumbers?.map((contact, index) => {
               return contact.number;
             })}
-          </Text>
+          </Text> */}
+          {item.phoneNumbers && item.phoneNumbers.length > 1 && (
+            <Badge size="sm" variant="solid" alignSelf="center" action="info" ml="$1">
+              <BadgeText>Multiple Numbers</BadgeText>
+              <BadgeIcon as={BadgeCheckIcon} ml="$1" />
+            </Badge>
+          )}
         </VStack>
-        <Text fontSize="$xs" color="$coolGray800" alignSelf="flex-start" $dark-color="$warmGray100">
+        {/* <Text fontSize="$xs" color="$coolGray800" alignSelf="flex-start" $dark-color="$warmGray100">
           time stamp
-        </Text>
+        </Text> */}
         <Button
           action="primary"
           variant="solid"
