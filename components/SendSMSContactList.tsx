@@ -1,4 +1,5 @@
 import {
+  AddIcon,
   Avatar,
   AvatarBadge,
   AvatarFallbackText,
@@ -8,14 +9,26 @@ import {
   Box,
   Button,
   ButtonIcon,
+  ButtonText,
   HStack,
   Heading,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuItemLabel,
   Text,
   VStack,
 } from '@gluestack-ui/themed';
 import * as Contacts from 'expo-contacts';
 import * as SMS from 'expo-sms';
-import { BadgeCheckIcon, MessageCircleMore } from 'lucide-react-native';
+import {
+  BadgeCheckIcon,
+  GlobeIcon,
+  MessageCircleMore,
+  PaintBucket,
+  PuzzleIcon,
+  SettingsIcon,
+} from 'lucide-react-native';
 import { FlatList } from 'react-native';
 
 import useContactStore from '@/store/contactsStore';
@@ -61,6 +74,21 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
       } else {
         console.log('No phone number available for this contact');
       }
+    } else {
+      // misfortune... there's no SMS available on this device
+      console.log('SMS is not available on this device');
+    }
+  };
+
+  const sendSMSByNumber = async (phoneNumber: string) => {
+    const isAvailable = await SMS.isAvailableAsync();
+    if (isAvailable) {
+      // do your SMS stuff here
+      const { result } = await SMS.sendSMSAsync(
+        [phoneNumber],
+        `Hello! This is a test message from the Situation Gate app!`
+      );
+      console.log(result, 'SMS status!');
     } else {
       // misfortune... there's no SMS available on this device
       console.log('SMS is not available on this device');
@@ -145,7 +173,7 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
         {/* <Text fontSize="$xs" color="$coolGray800" alignSelf="flex-start" $dark-color="$warmGray100">
           time stamp
         </Text> */}
-        <Button
+        {/* <Button
           action="primary"
           variant="solid"
           size="lg"
@@ -154,7 +182,67 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
           }}
         >
           <ButtonIcon as={MessageCircleMore} />
-        </Button>
+        </Button> */}
+
+        <Menu
+          placement="top"
+          trigger={({ ...triggerProps }) => {
+            return (
+              // <Button {...triggerProps}>
+              //   <ButtonText>Menu</ButtonText>
+              // </Button>
+              <Button
+                // action="primary"
+                // variant="solid"
+                // size="lg"
+                // onPress={() => {
+                //   sendSMS(item);
+                // }}
+                size="lg"
+                {...triggerProps}
+              >
+                <ButtonIcon as={MessageCircleMore} />
+              </Button>
+            );
+          }}
+        >
+          {/* <MenuItem key="Community" textValue="Community">
+            <Icon as={GlobeIcon} size="sm" mr="$2" />
+            <MenuItemLabel size="sm">Community</MenuItemLabel>
+          </MenuItem> */}
+          {item.phoneNumbers?.map((contact, index) => {
+            return (
+              <MenuItem
+                key={index}
+                textValue={contact.number}
+                onPress={() => {
+                  console.log(`Pressed Menu Item For Sending SMS to ${contact.number}!`);
+                  if (contact.number) sendSMSByNumber(contact.number);
+                  else console.log('No phone number available for this contact');
+                }}
+              >
+                <Icon as={MessageCircleMore} size="sm" mr="$2" />
+                <MenuItemLabel size="sm">{contact.number}</MenuItemLabel>
+              </MenuItem>
+            );
+          })}
+          {/* <MenuItem key="Plugins" textValue="Plugins">
+            <Icon as={PuzzleIcon} size="sm" mr="$2" />
+            <MenuItemLabel size="sm">Plugins</MenuItemLabel>
+          </MenuItem>
+          <MenuItem key="Theme" textValue="Theme">
+            <Icon as={PaintBucket} size="sm" mr="$2" />
+            <MenuItemLabel size="sm">Theme</MenuItemLabel>
+          </MenuItem>
+          <MenuItem key="Settings" textValue="Settings">
+            <Icon as={SettingsIcon} size="sm" mr="$2" />
+            <MenuItemLabel size="sm">Settings</MenuItemLabel>
+          </MenuItem>
+          <MenuItem key="Add account" textValue="Add account">
+            <Icon as={AddIcon} size="sm" mr="$2" />
+            <MenuItemLabel size="sm">Add account</MenuItemLabel>
+          </MenuItem> */}
+        </Menu>
       </HStack>
     </Box>
   );
