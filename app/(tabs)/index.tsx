@@ -9,10 +9,10 @@ export default function TabOneScreen() {
         Situation Gate
       </Text> */}
       <Center>
-        <Heading size="xl" pl="$4" pt="$3" pb="$0">
+        <Heading size="xl" pl="$4" pt="$2" pb="$0">
           Situation Gate
         </Heading>
-        <Divider my="$4" width="80%" />
+        <Divider my="$2" width="80%" />
       </Center>
       {/* <EditScreenInfo path="app/(tabs)/index.tsx" /> */}
       <SendSMSContactList />

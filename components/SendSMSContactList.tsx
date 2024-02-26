@@ -129,6 +129,13 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
     return true;
   }
 
+  const colors = ['$indigo600', '$red500', '$yellow500', '$green500', '$blue500'];
+
+  const getRandomColor = () => {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
   // console.log(item.imageAvailable, 'item');
 
   return (
@@ -143,8 +150,8 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
       py="$2"
     >
       <HStack space="xl" justifyContent="space-between">
-        <Avatar size="md">
-          <AvatarFallbackText>{item.firstName}</AvatarFallbackText>
+        <Avatar bgColor={getRandomColor()} size="md">
+          <AvatarFallbackText>{item?.firstName[0]}</AvatarFallbackText>
           {/* <AvatarImage source={{ uri: imageUri }} /> */}
           {/* <MessageCircleMore /> */}
           <AvatarBadge $dark-borderColor="$black" />
@@ -265,7 +272,7 @@ function ListContactsCheckBox() {
   }
 
   return (
-    <Box flex={1} py="$3">
+    <Box flex={1} py="$0">
       <Box alignItems="center">
         <Heading size="lg" pb="$0">
           Quick Contacts
