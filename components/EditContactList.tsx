@@ -2,7 +2,6 @@ import {
   Box,
   Pressable,
   Text,
-  Center,
   CheckboxGroup,
   Checkbox,
   CheckboxIndicator,
@@ -12,7 +11,7 @@ import {
 import * as Contacts from 'expo-contacts';
 import { Check as CheckIcon } from 'lucide-react-native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 
 import useContactStore from '@/store/contactsStore';
 
@@ -52,9 +51,9 @@ function ListContactsCheckBox() {
       });
 
       if (data.length > 0) {
-        const contact = data[0];
-        console.log(contact);
-        console.table(data);
+        // const contact = data[0];
+        // console.log(contact);
+        // console.table(data);
         setContacts(data);
 
         // addContacts(data); works to add
@@ -66,35 +65,37 @@ function ListContactsCheckBox() {
     fetchContacts();
   }, []);
 
-  const handleChange = useCallback((contactIDs: React.SetStateAction<string[]>) => {
-    console.log(contactIDs, 'current contactIDs');
-    const selectedContactsArray = Array.isArray(contactIDs) ? contactIDs : [contactIDs];
-    console.log(selectedContactsArray, 'current selectedContactsArray');
-    const selectedContacts = contacts.filter((contact) =>
-      selectedContactsArray.includes(contact.id)
-    );
-    console.log(selectedContacts, 'selectedContacts');
+  const handleChange = useCallback(
+    (contactIDs: React.SetStateAction<string[]>) => {
+      console.log(contactIDs, 'current contactIDs');
+      const selectedContactsArray = Array.isArray(contactIDs) ? contactIDs : [contactIDs];
+      console.log(selectedContactsArray, 'current selectedContactsArray');
+      const selectedContacts = contacts.filter((contact) =>
+        selectedContactsArray.includes(contact.id)
+      );
+      console.log(selectedContacts, 'selectedContacts');
 
-    // verify if selectedContacts are not already in the store before adding to the store
+      // verify if selectedContacts are not already in the store before adding to the store
 
-    addContacts(selectedContacts);
+      addContacts(selectedContacts);
 
-    setSelectedContacts(contactIDs);
-    console.log(contacts, 'contacts in state store');
-  }, []);
-
-  console.log(selectedContacts, 'selectedContacts currently selected');
+      setSelectedContacts(contactIDs);
+      console.log(contacts, 'contacts in state store');
+    },
+    [contacts, addContacts, setSelectedContacts]
+  );
 
   if (contacts.length === 0) {
     return (
-      <Center>
+      <Box flex={1} borderWidth="$1" borderColor="$amber400" borderRadius="$md" px="$1.5" py="$10">
         <Text>Loading Contacts...</Text>
-      </Center>
+      </Box>
     );
   }
 
+  console.log(selectedContacts, 'selectedContacts currently selected');
   return (
-    <Box flex={1} borderWidth="$1" borderColor="$amber400" borderRadius="$md" px="$1.5" py="$10">
+    <Box flex={1} borderWidth="$1" borderColor="$amber400" borderRadius="$md" px="$1.5" py="$0">
       <CheckboxGroup value={selectedContacts} onChange={handleChange}>
         <FlatList
           data={contacts}
@@ -108,7 +109,7 @@ function ListContactsCheckBox() {
               //   <CheckboxLabel>{item.firstName}</CheckboxLabel>
               // </Checkbox>
               <MemoizedCheckbox value={item?.id} label={label}>
-                {item.firstName}
+                {item.name ?? 'Unnamed contact'}
               </MemoizedCheckbox>
             );
           }}
@@ -135,51 +136,46 @@ export default function EditContactList() {
         px={32}
         borderRadius={4}
         elevation={3}
-        backgroundColor="aqua"
+        backgroundColor="$darkBlue600"
+        $active-bgColor="white"
         onPress={() => {
           console.log('pressed button for adding contacts to list!');
         }}
       >
-        <Text style={styles.text}>Add Contacts to your List 🔒</Text>
+        <Text
+          fontSize={16}
+          lineHeight={21}
+          fontWeight="bold"
+          letterSpacing={0.25}
+          color="$yellow100"
+        >
+          Add Contacts to your List 🔒
+        </Text>
+      </Pressable>
+      <Pressable
+        alignItems="center"
+        justifyContent="center"
+        my={12}
+        py={12}
+        px={32}
+        borderRadius={4}
+        elevation={3}
+        backgroundColor="$emerald600"
+        $active-bgColor="white"
+        onPress={() => {
+          console.log('pressed button for adding contacts to list!');
+        }}
+      >
+        <Text
+          fontSize={16}
+          lineHeight={21}
+          fontWeight="bold"
+          letterSpacing={0.25}
+          color="$yellow100"
+        >
+          Clear All Contacts in your List 🧹
+        </Text>
       </Pressable>
     </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  friendlyText: {
-    fontSize: 17,
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'white',
-  },
-  text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color: 'black',
-  },
-  item: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 10,
-    borderRadius: 4,
-    // padding: 20,
-    marginVertical: 4,
-    // marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
-});

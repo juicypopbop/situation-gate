@@ -1,51 +1,20 @@
-import { StyleSheet } from 'react-native';
+import { Center, Divider, Heading } from '@gluestack-ui/themed';
 
 import SendSMSContactList from '@/components/SendSMSContactList';
-import { Text, View } from '@/components/Themed';
 
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Situation Gate</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+    <Center flex={1}>
+      {/* <Text fontSize={20} fontWeight="bold" pt={15}>
+        Situation Gate
+      </Text> */}
+      <Heading size="xl" pl="$4" pt="$3" pb="$0">
+        Situation Gate
+      </Heading>
+      <Divider my="$4" width="80%" />
       {/* <EditScreenInfo path="app/(tabs)/index.tsx" /> */}
-      <View style={styles.simpleContainer}>
-        <Text
-          style={styles.friendlyText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)"
-        >
-          SMS here stuf
-        </Text>
-      </View>
       <SendSMSContactList />
       {/* <GenerateSMS /> */}
-    </View>
+    </Center>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  friendlyText: {
-    fontSize: 17,
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  simpleContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-});
