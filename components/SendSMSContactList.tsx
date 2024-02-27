@@ -37,10 +37,10 @@ import useSettingsStore from '@/store/settingsStore';
 
 interface ContactItemProps {
   contact: Contacts.Contact;
-  defaultQuickMessage: string;
+  customQuickMessage: string;
 }
 
-const ContactItem = ({ contact, defaultQuickMessage }: ContactItemProps) => {
+const ContactItem = ({ contact, customQuickMessage }: ContactItemProps) => {
   // const [imageUri, setImageUri] = useState<string | undefined>();
 
   // useEffect(() => {
@@ -90,7 +90,7 @@ const ContactItem = ({ contact, defaultQuickMessage }: ContactItemProps) => {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
       // do your SMS stuff here
-      const { result } = await SMS.sendSMSAsync([phoneNumber], defaultQuickMessage);
+      const { result } = await SMS.sendSMSAsync([phoneNumber], customQuickMessage);
       console.log(result, 'SMS status!');
     } else {
       // misfortune... there's no SMS available on this device
@@ -261,7 +261,7 @@ const ContactItem = ({ contact, defaultQuickMessage }: ContactItemProps) => {
 
 function ListContactsCheckBox() {
   const { contacts, contactCount } = useContactStore();
-  const { defaultQuickMessage } = useSettingsStore();
+  const { customQuickMessage } = useSettingsStore();
 
   if (contactCount === 0) {
     return (
@@ -289,7 +289,7 @@ function ListContactsCheckBox() {
       <FlatList
         data={contacts}
         renderItem={({ item }) => (
-          <ContactItem contact={item} defaultQuickMessage={defaultQuickMessage} />
+          <ContactItem contact={item} customQuickMessage={customQuickMessage} />
         )}
         keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
       />

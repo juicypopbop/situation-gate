@@ -17,19 +17,37 @@ import {
   Textarea,
 } from '@gluestack-ui/themed';
 import { CloseIcon } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { debounce } from 'moderndash';
+import { useState, useRef, useCallback } from 'react';
 
 import useSettingsStore from '@/store/settingsStore';
 
-interface DefaultTextPromptModalProps {
+interface CustomTextPromptModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DefaultTextPromptModal = ({ showModal, setShowModal }: DefaultTextPromptModalProps) => {
-  const { defaultQuickMessage, setDefaultQuickMessage } = useSettingsStore();
+const CustomTextPromptModal = ({ showModal, setShowModal }: CustomTextPromptModalProps) => {
+  const { customQuickMessage, setCustomQuickMessage } = useSettingsStore();
+  const [textAreaValue, setTextAreaValue] = useState(customQuickMessage);
+
   console.log(showModal);
-  const ref = React.useRef(null);
+  const ref = useRef(null);
+
+  //   const saveChanges = () => {
+  //     setCustomQuickMessage(textAreaValue);
+  //     setShowModal(false);
+  //   };
+
+  const debouncedSetCustomQuickMessage = useCallback(
+    debounce(() => setCustomQuickMessage(textAreaValue), 200),
+    [setCustomQuickMessage, textAreaValue]
+  );
+
+  const saveChanges = () => {
+    debouncedSetCustomQuickMessage();
+    setShowModal(false);
+  };
 
   return (
     <Modal
@@ -42,7 +60,7 @@ const DefaultTextPromptModal = ({ showModal, setShowModal }: DefaultTextPromptMo
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
-          <Heading size="lg">Change Default Text Prompt</Heading>
+          <Heading size="lg">Change Custom Text Prompt</Heading>
           <ModalCloseButton>
             <Icon as={CloseIcon} />
           </ModalCloseButton>
@@ -50,7 +68,7 @@ const DefaultTextPromptModal = ({ showModal, setShowModal }: DefaultTextPromptMo
         <ModalBody>
           <Text>Change here the default text prompt for sending SMS to your contacts.</Text>
           <Textarea size="md" isReadOnly={false} isInvalid={false} isDisabled={false} w="$64">
-            <TextareaInput value={defaultQuickMessage} onChangeText={setDefaultQuickMessage} />
+            <TextareaInput value={textAreaValue} onChangeText={setTextAreaValue} />
           </Textarea>
         </ModalBody>
         <ModalFooter>
@@ -70,10 +88,11 @@ const DefaultTextPromptModal = ({ showModal, setShowModal }: DefaultTextPromptMo
             action="positive"
             borderWidth="$0"
             onPress={() => {
-              setShowModal(false);
+              console.log('Saving changes to default text prompt!');
+              saveChanges();
             }}
           >
-            <ButtonText>Explore</ButtonText>
+            <ButtonText>Save</ButtonText>
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -85,7 +104,7 @@ const SettingsPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <Box flex={1}>
+    <Box flex={1} mx="$2">
       {/* <ListContactsCheckBox /> */}
       <Text $light-color="$amber500" $dark-color="$blue400">
         Here are your different settings for the app:
@@ -112,10 +131,10 @@ const SettingsPage = () => {
           letterSpacing={0.25}
           color="$yellow100"
         >
-          Change Default Text Prompt 📝
+          Change Custom Text Prompt 📝
         </Text>
       </Pressable>
-      <DefaultTextPromptModal showModal={showModal} setShowModal={setShowModal} />
+      <CustomTextPromptModal showModal={showModal} setShowModal={setShowModal} />
     </Box>
   );
 };
