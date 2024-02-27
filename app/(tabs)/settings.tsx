@@ -3,7 +3,7 @@ import { Text, Center, Divider, Box, Heading } from '@gluestack-ui/themed';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import SettingsPage from '@/components/SettingsPage';
 
-export default function TabThreeScreen() {
+export default function SettingsTabScreen() {
   return (
     // <View style={styles.container}>
     //   <Text style={styles.title}>Tab Three</Text>

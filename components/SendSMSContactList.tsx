@@ -25,6 +25,7 @@ import {
   BadgeCheckIcon,
   GlobeIcon,
   MessageCircleMore,
+  NotebookTabs,
   PaintBucket,
   PuzzleIcon,
   SettingsIcon,
@@ -150,6 +151,7 @@ const ContactItem = ({ contact, defaultQuickMessage }: ContactItemProps) => {
       $sm-pl="$4"
       $sm-pr="$5"
       py="$2"
+      mx="$1"
     >
       <HStack space="xl" justifyContent="space-between">
         <Avatar bgColor={getRandomColor()} size="md">
@@ -175,7 +177,7 @@ const ContactItem = ({ contact, defaultQuickMessage }: ContactItemProps) => {
           {contact.phoneNumbers && contact.phoneNumbers.length > 1 && (
             <Badge size="sm" variant="solid" alignSelf="center" action="info" ml="$1">
               <BadgeText>Multiple Numbers</BadgeText>
-              <BadgeIcon as={BadgeCheckIcon} ml="$1" />
+              <BadgeIcon as={NotebookTabs} ml="$1" />
             </Badge>
           )}
         </VStack>
@@ -264,9 +266,9 @@ function ListContactsCheckBox() {
   if (contactCount === 0) {
     return (
       <Box alignItems="center">
-        <Heading size="lg" pb="$0">
+        {/* <Heading size="lg" pb="$0">
           Quick Contacts
-        </Heading>
+        </Heading> */}
         <Heading size="md" pb="$3">
           No Contacts Available
         </Heading>
@@ -277,9 +279,9 @@ function ListContactsCheckBox() {
   return (
     <Box flex={1} py="$0">
       <Box alignItems="center">
-        <Heading size="lg" pb="$0">
+        {/* <Heading size="lg" pb="$0">
           Quick Contacts
-        </Heading>
+        </Heading> */}
         <Heading size="md" pb="$3">
           {contactCount} Contacts Available
         </Heading>

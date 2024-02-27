@@ -41,7 +41,7 @@ function ListContactsCheckBox() {
   const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
 
-  const { addContacts } = useContactStore();
+  const { addContacts, clearContacts } = useContactStore();
 
   const fetchContacts = async () => {
     const { status } = await Contacts.requestPermissionsAsync();
@@ -96,8 +96,8 @@ function ListContactsCheckBox() {
 
   console.log(selectedContacts, 'selectedContacts currently selected');
   return (
-    <Box flex={1} borderWidth="$1" borderColor="$amber400" borderRadius="$md" px="$1.5" py="$0">
-      <CheckboxGroup value={selectedContacts} onChange={handleChange}>
+    <Box flex={1} borderWidth="$1" borderColor="$amber600" borderRadius="$md" px="$1.5" py="$0">
+      <CheckboxGroup flex={1} value={selectedContacts} onChange={handleChange}>
         <FlatList
           data={contacts}
           renderItem={({ item }) => {
@@ -117,18 +117,6 @@ function ListContactsCheckBox() {
           keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
         />
       </CheckboxGroup>
-    </Box>
-  );
-}
-
-export default function EditContactList() {
-  return (
-    <Box flex={1} mt={0}>
-      <Text $light-color="$amber500" $dark-color="$blue400">
-        Here are your Contacts:
-      </Text>
-      <Text>Choose Contacts you wish to import into your list.</Text>
-      <ListContactsCheckBox />
       <Pressable
         alignItems="center"
         justifyContent="center"
@@ -164,7 +152,9 @@ export default function EditContactList() {
         backgroundColor="$emerald600"
         $active-bgColor="white"
         onPress={() => {
-          console.log('pressed button for adding contacts to list!');
+          console.log('pressed button for clearing contacts from list!');
+          setSelectedContacts([]);
+          clearContacts();
         }}
       >
         <Text
@@ -177,6 +167,18 @@ export default function EditContactList() {
           Clear All Contacts in your List 🧹
         </Text>
       </Pressable>
+    </Box>
+  );
+}
+
+export default function EditContactList() {
+  return (
+    <Box flex={1} mt={0}>
+      <Text $light-color="$amber500" $dark-color="$blue400">
+        Here are your Contacts:
+      </Text>
+      <Text>Choose Contacts you wish to import into your list.</Text>
+      <ListContactsCheckBox />
     </Box>
   );
 }
