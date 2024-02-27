@@ -9,7 +9,7 @@ export default function TabOneScreen() {
         Situation Gate
       </Text> */}
       <Center>
-        <Heading size="xl" pl="$4" pt="$2" pb="$0">
+        <Heading size="xl" pt="$2" pb="$0">
           Situation Gate
         </Heading>
         <Divider my="$2" width="80%" />

@@ -32,8 +32,14 @@ import {
 import { FlatList } from 'react-native';
 
 import useContactStore from '@/store/contactsStore';
+import useSettingsStore from '@/store/settingsStore';
 
-const ContactItem = ({ item }: { item: Contacts.Contact }) => {
+interface ContactItemProps {
+  contact: Contacts.Contact;
+  defaultQuickMessage: string;
+}
+
+const ContactItem = ({ contact, defaultQuickMessage }: ContactItemProps) => {
   // const [imageUri, setImageUri] = useState<string | undefined>();
 
   // useEffect(() => {
@@ -53,7 +59,6 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
 
   //   fetchImageUri();
   // }, [item]);
-
   const sendSMS = async (item: Contacts.Contact) => {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
@@ -84,10 +89,7 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
     const isAvailable = await SMS.isAvailableAsync();
     if (isAvailable) {
       // do your SMS stuff here
-      const { result } = await SMS.sendSMSAsync(
-        [phoneNumber],
-        `Hello! This is a test message from the Situation Gate app!`
-      );
+      const { result } = await SMS.sendSMSAsync([phoneNumber], defaultQuickMessage);
       console.log(result, 'SMS status!');
     } else {
       // misfortune... there's no SMS available on this device
@@ -107,11 +109,11 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
     }
   };
 
-  getImageData(item);
+  getImageData(contact);
 
-  if (item.imageAvailable) {
-    console.log(item.imageAvailable, 'item');
-    console.log(item.rawImage, 'item image');
+  if (contact.imageAvailable) {
+    console.log(contact.imageAvailable, 'contact');
+    console.log(contact.rawImage, 'contact image');
   }
 
   function areAllDuplicates(phoneNumbers: string[]): boolean {
@@ -151,7 +153,7 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
     >
       <HStack space="xl" justifyContent="space-between">
         <Avatar bgColor={getRandomColor()} size="md">
-          <AvatarFallbackText>{item?.firstName[0]}</AvatarFallbackText>
+          <AvatarFallbackText>{contact?.firstName[0]}</AvatarFallbackText>
           {/* <AvatarImage source={{ uri: imageUri }} /> */}
           {/* <MessageCircleMore /> */}
           <AvatarBadge $dark-borderColor="$black" />
@@ -163,14 +165,14 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
             fontWeight="$bold"
             $dark-color="$warmGray100"
           >
-            {item.name}
+            {contact.name}
           </Text>
           {/* <Text color="$coolGray600" $dark-color="$warmGray200">
             {item.phoneNumbers?.map((contact, index) => {
               return contact.number;
             })}
           </Text> */}
-          {item.phoneNumbers && item.phoneNumbers.length > 1 && (
+          {contact.phoneNumbers && contact.phoneNumbers.length > 1 && (
             <Badge size="sm" variant="solid" alignSelf="center" action="info" ml="$1">
               <BadgeText>Multiple Numbers</BadgeText>
               <BadgeIcon as={BadgeCheckIcon} ml="$1" />
@@ -217,7 +219,7 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
             <Icon as={GlobeIcon} size="sm" mr="$2" />
             <MenuItemLabel size="sm">Community</MenuItemLabel>
           </MenuItem> */}
-          {item.phoneNumbers?.map((contact, index) => {
+          {contact.phoneNumbers?.map((contact, index) => {
             return (
               <MenuItem
                 key={index}
@@ -257,6 +259,7 @@ const ContactItem = ({ item }: { item: Contacts.Contact }) => {
 
 function ListContactsCheckBox() {
   const { contacts, contactCount } = useContactStore();
+  const { defaultQuickMessage } = useSettingsStore();
 
   if (contactCount === 0) {
     return (
@@ -283,7 +286,9 @@ function ListContactsCheckBox() {
       </Box>
       <FlatList
         data={contacts}
-        renderItem={ContactItem}
+        renderItem={({ item }) => (
+          <ContactItem contact={item} defaultQuickMessage={defaultQuickMessage} />
+        )}
         keyExtractor={(item, index) => (item.id ? item.id : index.toString())}
       />
     </Box>
