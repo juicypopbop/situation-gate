@@ -20,12 +20,16 @@ import {
   CloseIcon,
 } from '@gluestack-ui/themed';
 import { EditIcon, RotateCcwIcon } from 'lucide-react-native';
+import { useState } from 'react';
 import { FlatList } from 'react-native';
 
 import useQuickMessagesStore from '@/store/quickMessagesStore';
 
 function ListCustomQuickMessages() {
   const { customQuickMessages, deleteCustomQuickMessage } = useQuickMessagesStore();
+  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+  const [indexToDelete, setIndexToDelete] = useState<number | null>(null);
+
   const toast = useToast();
   const toastDuration = 5000;
 
@@ -41,6 +45,51 @@ function ListCustomQuickMessages() {
       </Box>
     );
   }
+
+  const handleDelete = (index: number) => {
+    setMessageToDelete(customQuickMessages[index]);
+    setIndexToDelete(index);
+
+    const deleteTimeout = setTimeout(() => {
+      deleteCustomQuickMessage(index);
+      setMessageToDelete(null);
+      setIndexToDelete(null);
+    }, toastDuration);
+
+    toast.show({
+      placement: 'bottom',
+      duration: toastDuration,
+      render: ({ id }) => {
+        const toastId = 'toast-' + id;
+        return (
+          <Toast nativeID={toastId} action="success" variant="accent">
+            <VStack space="xs">
+              <ToastTitle>Quick Message Deleted</ToastTitle>
+              <ToastDescription>Do you wish to undo?</ToastDescription>
+            </VStack>
+            <Pressable
+              mt="$1"
+              onPress={() => {
+                // undo the delete
+                console.log('Undoing the delete');
+                clearTimeout(deleteTimeout);
+                setMessageToDelete(null);
+                setIndexToDelete(null);
+                toast.close(id);
+              }}
+            >
+              <Icon as={RotateCcwIcon} color="$coolGray50" />
+            </Pressable>
+          </Toast>
+        );
+      },
+      onCloseComplete: () => {
+        console.log('Toast Closed');
+        setMessageToDelete(null);
+        setIndexToDelete(null);
+      },
+    });
+  };
 
   return (
     <Box flex={1} py="$0" alignItems="center">
@@ -86,36 +135,37 @@ function ListCustomQuickMessages() {
                     // delete the custom quick message
                     console.log(`Deleting custom quick message: ${customQuickMessage}`);
                     console.log(`At Index: ${index}`);
-                    deleteCustomQuickMessage(index);
+                    handleDelete(index);
+                    // deleteCustomQuickMessage(index);
 
-                    toast.show({
-                      placement: 'bottom',
-                      duration: toastDuration,
-                      render: ({ id }) => {
-                        const toastId = 'toast-' + id;
-                        return (
-                          <Toast nativeID={toastId} action="success" variant="accent">
-                            <VStack space="xs">
-                              <ToastTitle>Quick Message Deleted</ToastTitle>
-                              <ToastDescription>Do you wish to undo?</ToastDescription>
-                            </VStack>
-                            <Pressable
-                              mt="$1"
-                              onPress={() => {
-                                // undo the delete
-                                console.log('Undoing the delete');
-                                toast.close(id);
-                              }}
-                            >
-                              <Icon as={RotateCcwIcon} color="$coolGray50" />
-                            </Pressable>
-                          </Toast>
-                        );
-                      },
-                      onCloseComplete: () => {
-                        console.log('Toast Closed');
-                      },
-                    });
+                    // toast.show({
+                    //   placement: 'bottom',
+                    //   duration: toastDuration,
+                    //   render: ({ id }) => {
+                    //     const toastId = 'toast-' + id;
+                    //     return (
+                    //       <Toast nativeID={toastId} action="success" variant="accent">
+                    //         <VStack space="xs">
+                    //           <ToastTitle>Quick Message Deleted</ToastTitle>
+                    //           <ToastDescription>Do you wish to undo?</ToastDescription>
+                    //         </VStack>
+                    //         <Pressable
+                    //           mt="$1"
+                    //           onPress={() => {
+                    //             // undo the delete
+                    //             console.log('Undoing the delete');
+                    //             toast.close(id);
+                    //           }}
+                    //         >
+                    //           <Icon as={RotateCcwIcon} color="$coolGray50" />
+                    //         </Pressable>
+                    //       </Toast>
+                    //     );
+                    //   },
+                    //   onCloseComplete: () => {
+                    //     console.log('Toast Closed');
+                    //   },
+                    // });
                   }}
                 >
                   <ButtonText fontSize="$sm" fontWeight="$medium">
