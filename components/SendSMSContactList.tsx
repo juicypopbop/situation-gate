@@ -33,7 +33,7 @@ import {
 import { FlatList } from 'react-native';
 
 import useContactStore from '@/store/contactsStore';
-import useSettingsStore from '@/store/settingsStore';
+import useQuickMessagesStore from '@/store/quickMessagesStore';
 
 interface ContactItemProps {
   contact: Contacts.Contact;
@@ -261,7 +261,9 @@ const ContactItem = ({ contact, customQuickMessage }: ContactItemProps) => {
 
 function ListContactsCheckBox() {
   const { contacts, contactCount } = useContactStore();
-  const { customQuickMessage } = useSettingsStore();
+  const { getSelectedQuickMessage } = useQuickMessagesStore();
+
+  const customQuickMessage = getSelectedQuickMessage();
 
   if (contactCount === 0) {
     return (

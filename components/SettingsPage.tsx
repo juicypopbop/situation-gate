@@ -16,11 +16,12 @@ import {
   TextareaInput,
   Textarea,
 } from '@gluestack-ui/themed';
+import { Link } from 'expo-router';
 import { CloseIcon } from 'lucide-react-native';
 import { debounce } from 'moderndash';
 import { useState, useRef, useCallback } from 'react';
 
-import useSettingsStore from '@/store/settingsStore';
+import useQuickMessagesStore from '@/store/quickMessagesStore';
 
 interface CustomTextPromptModalProps {
   showModal: boolean;
@@ -28,24 +29,36 @@ interface CustomTextPromptModalProps {
 }
 
 const CustomTextPromptModal = ({ showModal, setShowModal }: CustomTextPromptModalProps) => {
-  const { customQuickMessage, setCustomQuickMessage } = useSettingsStore();
-  const [textAreaValue, setTextAreaValue] = useState(customQuickMessage);
+  const {
+    customQuickMessages,
+    selectedQuickMessage,
+    addCustomQuickMessage,
+    setSelectedQuickMessage,
+  } = useQuickMessagesStore();
+  //   const [textAreaValue, setTextAreaValue] = useState(customQuickMessages[selectedQuickMessage]);
+  const [textAreaValue, setTextAreaValue] = useState('');
 
-  console.log(showModal);
+  // TODO: Implement debouncing for saving changes to default text prompt
+
   const ref = useRef(null);
 
+  //   const debouncedAddCustomQuickMessage = useCallback(
+  //     debounce(() => {
+  //       addCustomQuickMessage(textAreaValue);
+  //       setSelectedQuickMessage(customQuickMessages.length); // Set the newly added message as the selected one
+  //     }, 200),
+  //     [addCustomQuickMessage, setSelectedQuickMessage, textAreaValue, customQuickMessages.length]
+  //   );
+
   //   const saveChanges = () => {
-  //     setCustomQuickMessage(textAreaValue);
+  //     debouncedAddCustomQuickMessage();
   //     setShowModal(false);
   //   };
 
-  const debouncedSetCustomQuickMessage = useCallback(
-    debounce(() => setCustomQuickMessage(textAreaValue), 200),
-    [setCustomQuickMessage, textAreaValue]
-  );
-
   const saveChanges = () => {
-    debouncedSetCustomQuickMessage();
+    addCustomQuickMessage(textAreaValue);
+    // setSelectedQuickMessage(customQuickMessages.length); // Set the newly added message as the selected one
+    setTextAreaValue('');
     setShowModal(false);
   };
 
@@ -60,15 +73,19 @@ const CustomTextPromptModal = ({ showModal, setShowModal }: CustomTextPromptModa
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
-          <Heading size="lg">Change Custom Text Prompt</Heading>
+          <Heading size="lg">Add Custom Text Prompt</Heading>
           <ModalCloseButton>
             <Icon as={CloseIcon} />
           </ModalCloseButton>
         </ModalHeader>
         <ModalBody>
-          <Text>Change here the default text prompt for sending SMS to your contacts.</Text>
+          <Text>Add here the custom text prompt for sending SMS to your contacts.</Text>
           <Textarea size="md" isReadOnly={false} isInvalid={false} isDisabled={false} w="$64">
-            <TextareaInput value={textAreaValue} onChangeText={setTextAreaValue} />
+            <TextareaInput
+              placeholder="Enter New Custom Text Prompt Here..."
+              value={textAreaValue}
+              onChangeText={setTextAreaValue}
+            />
           </Textarea>
         </ModalBody>
         <ModalFooter>
@@ -120,7 +137,7 @@ const SettingsPage = () => {
         backgroundColor="$amber600"
         $active-bgColor="white"
         onPress={() => {
-          console.log('pressed button for adding contacts to list!');
+          console.log('pressed button for adding custom text prompt to list!');
           setShowModal(true);
         }}
       >
@@ -131,9 +148,39 @@ const SettingsPage = () => {
           letterSpacing={0.25}
           color="$yellow100"
         >
-          Change Custom Text Prompt 📝
+          Add New Custom Text Prompt 📝
         </Text>
       </Pressable>
+      <Link href="/(tabs)/settings/edit-custom-text-prompts-list">
+        <Text>go to place</Text>
+      </Link>
+      <Link href="/(tabs)/settings/edit-custom-text-prompts-list" asChild>
+        <Pressable
+          alignItems="center"
+          justifyContent="center"
+          my={12}
+          py={12}
+          px={32}
+          borderRadius={4}
+          elevation={3}
+          backgroundColor="$indigo600"
+          $active-bgColor="white"
+          //   onPress={() => {
+          //     console.log('pressed button for editing custom text prompts list!');
+          //     // setShowModal(true);
+          //   }}
+        >
+          <Text
+            fontSize={16}
+            lineHeight={21}
+            fontWeight="bold"
+            letterSpacing={0.25}
+            color="$yellow100"
+          >
+            Edit Custom Text Prompt List 📝
+          </Text>
+        </Pressable>
+      </Link>
       <CustomTextPromptModal showModal={showModal} setShowModal={setShowModal} />
     </Box>
   );
