@@ -12,7 +12,22 @@ export interface QuickMessagesState {
 }
 
 const useQuickMessagesStore = create<QuickMessagesState>((set, get) => ({
-  customQuickMessages: ['Hey there, I am using Situation Gate!'],
+  customQuickMessages: [
+    'Hey there, I am using Situation Gate!',
+    'mike',
+    'jones',
+    'how are you today?',
+    'I am busy right now!',
+    'I am in a meeting right now!',
+    'I am driving right now!',
+    'I am in class right now!',
+    'I am in a movie right now!',
+    'I am in a show right now!',
+    'I am in a play right now!',
+    'I am in a concert right now!',
+    'I am in a game right now!',
+    'I am in a match right',
+  ],
   selectedQuickMessage: 0,
   setCustomQuickMessages: (messages: string[]) =>
     set(() => ({
